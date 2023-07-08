@@ -1,0 +1,20 @@
+<idea-plugin require-restart="true">
+  <id>net.codingwithcalvin.openbinfolder</id>
+  <name>Open Bin Folder</name>
+  <version>0.0.0.1</version>
+  <vendor url="https://project-url">Coding with Calvin</vendor>
+  <!--<idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_" />-->
+  <depends>com.intellij.modules.rider</depends>
+
+  <description>
+    Description with a minimum of 40 characters!
+  </description>
+
+
+  <actions>
+    <action id="net.codingwithcalvin.openbinfolder.actions.OpenBinFolderAction"
+            class="net.codingwithcalvin.openbinfolder.actions.OpenBinFolderAction" text="Open Bin Folder">
+      <add-to-group group-id="ProjectViewPopupMenu" />
+    </action>
+  </actions>
+</idea-plugin>

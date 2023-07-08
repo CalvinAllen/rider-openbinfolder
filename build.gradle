@@ -1,0 +1,67 @@
+// Reference https://www.jetbrains.org/intellij/sdk/docs/tutorials/build_system/gradle_guide.html
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'org.jetbrains.intellij' version '1.13.3'     // See https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id 'com.jetbrains.rdgen' version '2023.1.2'      // See https://github.com/JetBrains/rd/releases
+    id 'me.filippov.gradle.jvm.wrapper' version '0.14.0'
+}
+
+ext {
+    isWindows = Os.isFamily(Os.FAMILY_WINDOWS)
+    rdLibDirectory = {
+        new File(setupDependencies.idea.get().classes, "lib/rd")
+    }
+}
+
+repositories {
+    maven { url 'https://cache-redirector.jetbrains.com/intellij-repository/snapshots' }
+    maven { url 'https://cache-redirector.jetbrains.com/maven-central' }
+}
+
+wrapper {
+    gradleVersion = '7.6'
+    distributionType = Wrapper.DistributionType.ALL
+    distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
+}
+
+version = ext.PluginVersion
+
+tasks.named("processResources") {
+    from("dependencies.json", { into "META-INF" })
+}
+
+sourceSets {
+    main {
+        java.srcDir 'src/rider/main/java'
+        kotlin.srcDir 'src/rider/main/kotlin'
+        resources.srcDir 'src/rider/main/resources'
+    }
+}
+
+compileKotlin {
+    kotlinOptions { jvmTarget = "17" }
+}
+
+intellij {
+    type = 'RD'
+    version = "${ProductVersion}"
+    downloadSources = false
+    instrumentCode = false
+    // TODO: add plugins
+    // plugins = ["uml", "com.jetbrains.ChooseRuntime:1.0.9"]
+}
+
+runIde {
+    // Match Rider's default heap size of 1.5Gb (default for runIde is 512Mb)
+    maxHeapSize = "1500m"
+
+    // Rider's backend doesn't support dynamic plugins. It might be possible to work with auto-reload of the frontend
+    // part of a plugin, but there are dangers about keeping plugins in sync
+    autoReloadPlugins = false
+
+    // gradle-intellij-plugin will download the default version of the JBR for the snapshot. Update if required
+    // jbrVersion = "jbr_jcef-11_0_6b765.40" // https://confluence.jetbrains.com/display/JBR/Release+notes
+}
