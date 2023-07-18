@@ -14,7 +14,7 @@
   <actions>
     <action id="net.codingwithcalvin.openbinfolder.actions.OpenBinFolderAction"
             class="net.codingwithcalvin.openbinfolder.actions.OpenBinFolderAction" text="Open Bin Folder">
-      <add-to-group group-id="ProjectViewPopupMenu" />
+      <add-to-group group-id="SolutionExplorerPopupMenu.Tools" anchor="last" />
     </action>
   </actions>
 </idea-plugin>
